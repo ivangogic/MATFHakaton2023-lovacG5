@@ -703,6 +703,23 @@ class For(Node):
 
 class FuncCall(Node):
     __slots__ = ('name', 'args', 'coord', '__weakref__')
+
+    def to_json(self):
+        if self.name.name == 'malloc':
+            return {
+                'class': 'malloc',
+                'n': self.args.exprs[0].to_json(),
+                'type': None,
+                'line': str(self.coord)
+            }
+        if self.name.name == 'free':
+            return {
+                'class': 'free',
+                'name': self.args.exprs[0].name,
+                'line': str(self.coord)
+            }
+        return ""
+
     def __init__(self, name, args, coord=None):
         self.name = name
         self.args = args
