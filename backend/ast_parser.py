@@ -1,122 +1,199 @@
-# -----------------------------------------------------------------
-# pycparser: explore_ast.py
-#
-# This example demonstrates how to "explore" the AST created by
-# pycparser to understand its structure. The AST is a n-nary tree
-# of nodes, each node having several children, each with a name.
-# Just read the code, and let the comments guide you. The lines
-# beginning with #~ can be uncommented to print out useful
-# information from the AST.
-# It helps to have the pycparser/_c_ast.cfg file in front of you.
-#
-# Eli Bendersky [https://eli.thegreenplace.net/]
-# License: BSD
-# -----------------------------------------------------------------
-from __future__ import print_function
+memory = {}
+names = {}
+heap_memory = {}
+stack_pos = 1000
+stack_size = 1000
+heap_pos = 2000
+heap_size = 1000
 
-import json
-import sys
+def evaluate_expression(data):
+    memory.clear()
+    names.clear()
 
-# This is not required if you've installed pycparser into
-# your site-packages/ with setup.py
-#
-sys.path.extend(['.', '..'])
+    return eval_expr(data)
 
-from backend.pycparser import c_parser
-from backend.pycparser.c_ast import Node, FileAST
-
-# This is some C source to parse. Note that pycparser must begin
-# at the top level of the C file, i.e. with either declarations
-# or function definitions (this is called "external declarations"
-# in C grammar lingo)
-#
-# Also, a C parser must have all the types declared in order to
-# build the correct AST. It doesn't matter what they're declared
-# to, so I've inserted the dummy typedef in the code to let the
-# parser know Hash and Node are types. You don't need to do it
-# when parsing real, correct C code.
-
-# text = r"""
-# int main() {
-#     int a = 5;
-#     int *b = &a;
-#     *b  =7;
-#     int c = *b;
-#     int **d = &b;
-#     **d = 9;
-# }
-# """
-
-text = r"""
-int main() {
-    int a = 5; 
-    if (a > 3) {
-    
+def eval_expr(data):
+    functions = {
+        'assign': eval_assign,
+        'declare': eval_declare,
+        'unary_op': eval_unaryop,
+        'binary_op': eval_binaryop,
+        'const': eval_const,
+        'variable': eval_variable,
+        'while': eval_while,
+        'if': eval_if,
+        'malloc': eval_malloc,
+        'free': eval_free
     }
-    while (a>5) {
-        a = a + 1;
-    }
-}
-"""
-
-# int **c = &b;
-# int d = 3 * (2 + **c);
-
-# Create the parser and ask to parse the text. parse() will throw
-# a ParseError if there's an error in the code
-#
-parser = c_parser.CParser()
-ast: FileAST = parser.parse(text, filename='<none>')
-
-# Uncomment the following line to see the AST in a nice, human
-# readable way. show() is the most useful tool in exploring ASTs
-# created by pycparser. See the c_ast.py file for the options you
-# can pass it.
-
-ast.show(showcoord=True)
-
-main_compound = None
+    if type(data) == list:
+        for instruction in data:
+            eval_expr(instruction)
+    else:
+        return functions[data['class']](data)
 
 
-def ast_dfs(node: Node):
-    global main_compound
-    # print(node)
-    # print(node.__class__.__name__)
-    instruction = node.to_json()
-    if instruction and type(instruction) == list:
-        main_compound = json.dumps(instruction, indent=2)
-        return
-    # if json_text:
-    #     print(node.to_json())
-    # else:
-    #     print(node.__class__.__name__)
-    try:
-        for _, child in node.children():
-            ast_dfs(child)
-    except Exception as e:
-        # print(node.children())
-        print("### CRASH ###", e)
-        pass
+def eval_unaryop(json, flag=False):
+    # print('unary', json)
+    operation = json['operation']
+    operand = json['operand']
+    operand_type = operand['class']
+
+    if operation == '&':
+        if operand_type == 'variable':
+            return names[operand['name']][0]
+        else:
+            return -1
+    elif operation == '*':
+        evaluated_expr =  eval_expr(operand)
+        return memory[evaluated_expr] if not flag else evaluated_expr
+
+def eval_binaryop(eval_dict: dict):
+    operand_1 = eval_dict['operand1']
+    operand_2 = eval_dict['operand2']
+
+    op_code = eval_dict['operation']
+
+    evaluated_operand_1 = eval_expr(operand_1)
+    evaluated_operand_2 = eval_expr(operand_2)
+
+    if op_code == '+':
+        return evaluated_operand_1 + evaluated_operand_2
+    elif op_code == '-':
+        return evaluated_operand_1 - evaluated_operand_2
+    elif op_code == '*':
+        return evaluated_operand_1 * evaluated_operand_2
+    elif op_code == '/':
+        if type(evaluated_operand_1) == type(evaluated_operand_2) == int:
+            return evaluated_operand_1 // evaluated_operand_2
+        else:
+            return evaluated_operand_1 / evaluated_operand_2
+    elif op_code == '>':
+        return 1 if evaluated_operand_1 > evaluated_operand_2 else 0
+    elif op_code == '<':
+        return 1 if evaluated_operand_1 < evaluated_operand_2 else 0
+    elif op_code == '==':
+        return 1 if evaluated_operand_1 == evaluated_operand_2 else 0
+    elif op_code == '!=':
+        return 1 if evaluated_operand_1 != evaluated_operand_2 else 0
+    elif op_code == '>=':
+        return 1 if evaluated_operand_1 >= evaluated_operand_2 else 0
+    elif op_code == '<=':
+        return 1 if evaluated_operand_1 <= evaluated_operand_2 else 0
+    elif op_code == '&&':
+        return 1 if evaluated_operand_1 != 0 and evaluated_operand_2 != 0 else 0
+    elif op_code == '||':
+        return 1 if evaluated_operand_1 != 0 or evaluated_operand_2 != 0 else 0
+    else:
+        raise Exception("eval_binary_op : not supported operation")
 
 
+def eval_const(eval_dict: dict):
+    value = eval_dict['value']
+    type = eval_dict['type']
 
-ast_dfs(ast)
+    return value
 
-print("#############")
-print(main_compound)
-print("#############")
-print(ast)
-print("#############")
 
-main_compound = json.loads(main_compound)
+def eval_assign(instr):
+    # ("assign", instr)
+    if instr['class'] == 'assign':
+        left = instr['left']
 
-from parser import *
+        right = eval_expr(instr['right'])
+        # print("right", right)
 
-eval_expr(main_compound)
+        if left['class'] == 'variable':
+            var_name = left['name']
+            if '*' not in names[var_name][2]:
+                right = eval(f"{names[var_name][2]}({right})")
+            memory[names[var_name][0]] = right
 
-print('Memory')
-print(memory)
+        elif left['class'] == 'unary_op':
+            memory_addr = eval_unaryop(left, True)
+            if memory_addr in memory:
+                memory[memory_addr] = right
+            else:
+                raise Exception("dzaras po memoriji dje nesmije", memory_addr)
 
-print('Names')
-print(names)
 
+def eval_declare(data):
+    if data['class'] != 'declare':
+        return -1
+
+    if data['name'] in names.keys():
+        return -1
+
+    for i in range(stack_pos, stack_pos + stack_size):
+        if i not in memory.keys():
+            memory[i] = None
+            if 'init' in data:
+                memory[i] = eval_expr(data['init'])
+            strelice = '*' in data['type']
+            names[data['name']] = [i, strelice, data['type']]
+            break
+
+
+def eval_variable(data):
+    return memory[ names[data['name']][0] ]
+
+
+def eval_if(instr):
+    cond = eval_expr(instr['cond'])
+    print(cond)
+    if cond == 1:
+        print(instr)
+        for data in instr['iftrue']:
+            eval_expr(data)
+    else:
+        for data in instr['iffalse']:
+            eval_expr(data)
+
+
+def eval_while(instr):
+    while eval_expr(instr['cond']):
+        local_variables = []
+        for data in instr['compound']:
+            if data['class'] == 'declare':
+                local_variables.append(data['name'])
+            eval_expr(data)
+        for local_variable in local_variables:
+            memory.pop(names[local_variable][0])
+            names.pop(local_variable)
+
+
+def eval_malloc(instr):
+    # print(instr)
+    space = []
+    n_instr = instr['n']
+    n = eval_expr(n_instr)
+    for i in range(heap_pos, heap_pos + heap_size):
+        if i not in memory.keys():
+            space.append(i)
+            if len(space) == n:
+                break
+        else:
+            space.clear()
+
+    # print(space)
+    if len(space) == n:
+        for pos in space:
+            memory[pos] = 0
+        heap_memory[space[0]] = n
+        return space[0]
+    else:
+        return -1
+
+
+def eval_free(instr):
+    print(instr)
+    var_name = instr['name']
+    var_addr = memory[names[var_name][0]]
+    print(var_addr)
+    print(memory)
+    if var_addr in heap_memory.keys():
+        n = heap_memory.get(var_addr)
+        for i in range(var_addr, var_addr + n):
+            memory.pop(i)
+        heap_memory.pop(var_addr)
+    else:
+        return -1
