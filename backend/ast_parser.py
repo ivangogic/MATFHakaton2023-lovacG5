@@ -22,9 +22,8 @@ import sys
 #
 sys.path.extend(['.', '..'])
 
-from pycparser import c_parser
-from pycparser.c_ast import Node, FileAST
-from typing import List
+from backend.pycparser import c_parser
+from backend.pycparser.c_ast import Node, FileAST
 
 # This is some C source to parse. Note that pycparser must begin
 # at the top level of the C file, i.e. with either declarations
@@ -37,16 +36,28 @@ from typing import List
 # parser know Hash and Node are types. You don't need to do it
 # when parsing real, correct C code.
 
+# text = r"""
+# int main() {
+#     int a = 5;
+#     int *b = &a;
+#     *b  =7;
+#     int c = *b;
+#     int **d = &b;
+#     **d = 9;
+# }
+# """
+
 text = r"""
-int d = 7;
 int main() {
-    int a = 5;
-    a = 6;
-    int **b;
-    *b = &a;
-    a = 2 + a - b;
+    int a = 1;
+    int *b = &a;
+    int **c = &b;
+    **(b+1) = 5;
 }
 """
+
+# int **c = &b;
+# int d = 3 * (2 + **c);
 
 # Create the parser and ask to parse the text. parse() will throw
 # a ParseError if there's an error in the code
@@ -59,7 +70,7 @@ ast: FileAST = parser.parse(text, filename='<none>')
 # created by pycparser. See the c_ast.py file for the options you
 # can pass it.
 
-ast.show(showcoord=True)
+# ast.show(showcoord=True)
 
 main_compound = None
 
@@ -90,5 +101,17 @@ print("#############")
 ast_dfs(ast)
 
 print(main_compound)
+
+main_compound = json.loads(main_compound)
+
+from parser import *
+
+eval_expr(main_compound)
+
+print('Memory')
+print(memory)
+
+print('Names')
+print(names)
 
 # print(ast)

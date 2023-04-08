@@ -105,8 +105,8 @@ class CGenerator(object):
         lval_str = self._parenthesize_if(
             n.left,
             lambda d: not (self._is_simple_node(d) or
-                      self.reduce_parentheses and isinstance(d, c_ast.BinaryOp) and
-                      self.precedence_map[d.op] >= self.precedence_map[n.op]))
+                           self.reduce_parentheses and isinstance(d, c_ast.BinaryOp) and
+                           self.precedence_map[d.op] >= self.precedence_map[n.op]))
         # If `n.right.op` has a stronger -but not equal- binding precedence,
         # parenthesis can be omitted on the right:
         # e.g., `a + (b*c)` is equivalent to `a + b*c`.
@@ -117,8 +117,8 @@ class CGenerator(object):
         rval_str = self._parenthesize_if(
             n.right,
             lambda d: not (self._is_simple_node(d) or
-                      self.reduce_parentheses and isinstance(d, c_ast.BinaryOp) and
-                      self.precedence_map[d.op] > self.precedence_map[n.op]))
+                           self.reduce_parentheses and isinstance(d, c_ast.BinaryOp) and
+                           self.precedence_map[d.op] > self.precedence_map[n.op]))
         return '%s %s %s' % (lval_str, n.op, rval_str)
 
     def visit_Assignment(self, n):

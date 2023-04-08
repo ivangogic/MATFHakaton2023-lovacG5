@@ -22,7 +22,7 @@ from _ast_gen import ASTCodeGenerator
 ast_gen = ASTCodeGenerator('_c_ast.cfg')
 ast_gen.generate(open('c_ast.py', 'w'))
 
-from pycparser import c_parser
+from backend.pycparser import c_parser
 
 # Generates the tables
 #
@@ -35,6 +35,3 @@ c_parser.CParser(
 #
 importlib.invalidate_caches()
 
-import lextab
-import yacctab
-import c_ast

@@ -19,6 +19,10 @@
 import sys
 import json
 
+
+double = float
+
+
 def _repr(obj):
     """
     Get the representation of an object, with dedicated pprint-like format for lists.
@@ -264,7 +268,7 @@ class BinaryOp(Node):
 
     def to_json(self):
         json_dict = {
-            'class': 'binaryop',
+            'class': 'binary_op',
             'operation': self.op,
             'operand1': self.left.to_json(),
             'operand2': self.right.to_json()
@@ -400,7 +404,7 @@ class Constant(Node):
     def to_json(self):
         json_dict = {
             'class': 'const',
-            'value': self.value,
+            'value': eval(f"{self.type}({self.value})"),
             'type': self.type,
         }
         return json_dict
@@ -1131,7 +1135,7 @@ class UnaryOp(Node):
 
     def to_json(self):
         json_dict = {
-            'class': 'unaryop',
+            'class': 'unary_op',
             'operation': self.op,
             'operand': self.expr.to_json()
         }
