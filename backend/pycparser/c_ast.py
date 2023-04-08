@@ -843,7 +843,7 @@ class If(Node):
             ],
             'iffalse': [
                 item.to_json() for item in self.iffalse
-            ],
+            ] if self.iffalse else [],
             'line': str(self.coord)
         }
         return json_dict
