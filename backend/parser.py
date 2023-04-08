@@ -10,7 +10,9 @@ def eval_expr(data):
         'unary_op': eval_unaryop,
         'binary_op': eval_binaryop,
         'const': eval_const,
-        'variable': eval_variable
+        'variable': eval_variable,
+        'while': eval_while,
+        'if': eval_if
     }
     if type(data) == list:
         for instruction in data:
@@ -20,7 +22,7 @@ def eval_expr(data):
 
 
 def eval_unaryop(json, flag=False):
-    print('unary', json)
+    # print('unary', json)
     operation = json['operation']
     operand = json['operand']
     operand_type = operand['class']
@@ -54,6 +56,22 @@ def eval_binaryop(eval_dict: dict):
             return evaluated_operand_1 // evaluated_operand_2
         else:
             return evaluated_operand_1 / evaluated_operand_2
+    elif op_code == '>':
+        return 1 if evaluated_operand_1 > evaluated_operand_2 else 0
+    elif op_code == '<':
+        return 1 if evaluated_operand_1 < evaluated_operand_2 else 0
+    elif op_code == '==':
+        return 1 if evaluated_operand_1 == evaluated_operand_2 else 0
+    elif op_code == '!=':
+        return 1 if evaluated_operand_1 != evaluated_operand_2 else 0
+    elif op_code == '>=':
+        return 1 if evaluated_operand_1 >= evaluated_operand_2 else 0
+    elif op_code == '<=':
+        return 1 if evaluated_operand_1 <= evaluated_operand_2 else 0
+    elif op_code == '&&':
+        return 1 if evaluated_operand_1 != 0 and evaluated_operand_2 != 0 else 0
+    elif op_code == '||':
+        return 1 if evaluated_operand_1 != 0 or evaluated_operand_2 != 0 else 0
     else:
         raise Exception("eval_binary_op : not supported operation")
 
@@ -66,12 +84,12 @@ def eval_const(eval_dict: dict):
 
 
 def eval_assign(instr):
-    print("assign", instr)
+    # ("assign", instr)
     if instr['class'] == 'assign':
         left = instr['left']
 
         right = eval_expr(instr['right'])
-        print("right", right)
+        # print("right", right)
 
         if left['class'] == 'variable':
             var_name = left['name']
@@ -85,7 +103,6 @@ def eval_assign(instr):
                 memory[memory_addr] = right
             else:
                 raise Exception("dzaras po memoriji dje nesmije", memory_addr)
-                return -1
 
 
 def eval_declare(data):
@@ -107,4 +124,28 @@ def eval_declare(data):
 
 def eval_variable(data):
     return memory[ names[data['name']][0] ]
+
+
+def eval_if(instr):
+    cond = eval_expr(instr['cond'])
+    print(cond)
+    if cond == 1:
+        print(instr)
+        for data in instr['iftrue']:
+            eval_expr(data)
+    else:
+        for data in instr['iffalse']:
+            eval_expr(data)
+
+
+def eval_while(instr):
+    while eval_expr(instr['cond']):
+        local_variables = []
+        for data in instr['compound']:
+            if data['class'] == 'declare':
+                local_variables.append(data['name'])
+            eval_expr(data)
+        for local_variable in local_variables:
+            memory.pop(names[local_variable][0])
+            names.pop(local_variable)
 
