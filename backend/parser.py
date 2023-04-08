@@ -17,3 +17,10 @@ def eval_binaryop(eval_dict : dict):
         return evaluated_operand_1 / evaluated_operand_2
     else:
         raise Exception("eval_binaryop : not supported operation")
+
+
+def eval_const(eval_dict : dict):
+    value = eval_dict['value']
+    type = eval_dict['type']
+
+    return value
