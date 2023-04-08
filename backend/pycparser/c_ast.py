@@ -228,7 +228,8 @@ class Assignment(Node):
         json_dict = {
             'class': 'assign',
             'left': self.lvalue.to_json(),
-            'right': self.rvalue.to_json()
+            'right': self.rvalue.to_json(),
+            'line': str(self.coord)
         }
         return json_dict
 
@@ -271,7 +272,8 @@ class BinaryOp(Node):
             'class': 'binary_op',
             'operation': self.op,
             'operand1': self.left.to_json(),
-            'operand2': self.right.to_json()
+            'operand2': self.right.to_json(),
+            'line': str(self.coord)
         }
         return json_dict
 
@@ -406,6 +408,7 @@ class Constant(Node):
             'class': 'const',
             'value': eval(f"{self.type}({self.value})"),
             'type': self.type,
+            'line': str(self.coord)
         }
         return json_dict
 
@@ -453,6 +456,7 @@ class Decl(Node):
             'class': 'declare',
             'name': self.name,
             'type': '*'*num_stars + current.type.names[0],
+            'line': str(self.coord)
         }
         if self.init:
             json_dict['init'] = self.init.to_json()
@@ -792,7 +796,8 @@ class ID(Node):
         json_dict = {
             'class': 'variable',
             'name': self.name,
-            'type': None
+            'type': None,
+            'line': str(self.coord)
         }
         return json_dict
 
@@ -838,7 +843,8 @@ class If(Node):
             ],
             'iffalse': [
                 item.to_json() for item in self.iffalse
-            ]
+            ],
+            'line': str(self.coord)
         }
         return json_dict
 
@@ -1151,7 +1157,8 @@ class UnaryOp(Node):
         json_dict = {
             'class': 'unary_op',
             'operation': self.op,
-            'operand': self.expr.to_json()
+            'operand': self.expr.to_json(),
+            'line': str(self.coord)
         }
         return json_dict
 
@@ -1199,7 +1206,8 @@ class While(Node):
             'cond': self.cond.to_json(),
             'compound': [
                 item.to_json() for item in self.stmt
-            ]
+            ],
+            'line': str(self.coord)
         }
         return json_dict
 
