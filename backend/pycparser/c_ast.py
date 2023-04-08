@@ -828,6 +828,20 @@ class IdentifierType(Node):
 
 class If(Node):
     __slots__ = ('cond', 'iftrue', 'iffalse', 'coord', '__weakref__')
+
+    def to_json(self):
+        json_dict = {
+            'class': 'if',
+            'cond': self.cond.to_json(),
+            'iftrue': [
+                item.to_json() for item in self.iftrue
+            ],
+            'iffalse': [
+                item.to_json() for item in self.iffalse
+            ]
+        }
+        return json_dict
+
     def __init__(self, cond, iftrue, iffalse, coord=None):
         self.cond = cond
         self.iftrue = iftrue
@@ -1178,6 +1192,17 @@ class Union(Node):
 
 class While(Node):
     __slots__ = ('cond', 'stmt', 'coord', '__weakref__')
+
+    def to_json(self):
+        json_dict = {
+            'class': 'while',
+            'cond': self.cond.to_json(),
+            'compound': [
+                item.to_json() for item in self.stmt
+            ]
+        }
+        return json_dict
+
     def __init__(self, cond, stmt, coord=None):
         self.cond = cond
         self.stmt = stmt

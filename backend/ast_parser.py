@@ -49,10 +49,13 @@ from backend.pycparser.c_ast import Node, FileAST
 
 text = r"""
 int main() {
-    int a = 1;
-    int *b = &a;
-    int **c = &b;
-    **(b+1) = 5;
+    int a = 5; 
+    if (a > 3) {
+    
+    }
+    while (a>5) {
+        a = a + 1;
+    }
 }
 """
 
@@ -70,7 +73,7 @@ ast: FileAST = parser.parse(text, filename='<none>')
 # created by pycparser. See the c_ast.py file for the options you
 # can pass it.
 
-# ast.show(showcoord=True)
+ast.show(showcoord=True)
 
 main_compound = None
 
@@ -96,11 +99,14 @@ def ast_dfs(node: Node):
         pass
 
 
-print("#############")
 
 ast_dfs(ast)
 
+print("#############")
 print(main_compound)
+print("#############")
+print(ast)
+print("#############")
 
 main_compound = json.loads(main_compound)
 
@@ -114,4 +120,3 @@ print(memory)
 print('Names')
 print(names)
 
-# print(ast)
