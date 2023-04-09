@@ -28,16 +28,32 @@ def get_all_states(json1):
     eval_expr(json1)
     return get_final_states(all_states)
 
+#2 2 3 3 3 4 4 4 5 5 5 6 6 6 4 4 4 5 5 5 6 6 6 4 4 4 5 5 5 6 6 6 4 4 4 5 5 5 6 6 6 4 4 4 -1
 
 def get_final_states(states):
     final_states = []
     states.append([0,0,0,-1])
-    print(*states,sep='\n')
+    states.reverse()
+    #print(*states,sep='\n')
     for i in range(len(states)-1):
-        ind1 = states[len(states)-1-i][3]
-        ind2 = states[len(states)-1-(i+1)][3]
+        ind1 = states[i][3]
+        ind2 = states[i+1][3]
         if ind1!=ind2:
-            final_states.append(states[i])
-    # final_states.reverse()
+            final_states.append(states[i+1])
+    final_states.reverse()
     print(*final_states,sep='\n')
     return final_states
+
+
+# [{1000: 0}, {'a': [1000, False, 'int']}, {}, '2']
+# [{1000: 0, 1001: 2000, 2000: 0, 2001: 0, 2002: 0}, {'a': [1000, False, 'int'], 'b': [1001, False, 'int']}, {2000: 3}, '3']
+# [{1000: 0, 1001: 2000, 2000: 0, 2001: 0, 2002: 0}, {'a': [1000, False, 'int'], 'b': [1001, False, 'int']}, {2000: 3}, '4']
+# [{1000: 0, 1001: 2000, 2000: 16, 2001: 0, 2002: 0}, {'a': [1000, False, 'int'], 'b': [1001, False, 'int']}, {2000: 3}, '5']
+# [{1000: 1, 1001: 2000, 2000: 16, 2001: 0, 2002: 0}, {'a': [1000, False, 'int'], 'b': [1001, False, 'int']}, {2000: 3}, '6']
+# [{1000: 1, 1001: 2000, 2000: 16, 2001: 0, 2002: 0}, {'a': [1000, False, 'int'], 'b': [1001, False, 'int']}, {2000: 3}, '4']
+# [{1000: 1, 1001: 2000, 2000: 16, 2001: 17, 2002: 0}, {'a': [1000, False, 'int'], 'b': [1001, False, 'int']}, {2000: 3}, '5']
+# [{1000: 2, 1001: 2000, 2000: 16, 2001: 17, 2002: 0}, {'a': [1000, False, 'int'], 'b': [1001, False, 'int']}, {2000: 3}, '6']
+# [{1000: 2, 1001: 2000, 2000: 16, 2001: 17, 2002: 0}, {'a': [1000, False, 'int'], 'b': [1001, False, 'int']}, {2000: 3}, '4']
+# [{1000: 2, 1001: 2000, 2000: 16, 2001: 17, 2002: 18}, {'a': [1000, False, 'int'], 'b': [1001, False, 'int']}, {2000: 3}, '5']
+# [{1000: 3, 1001: 2000, 2000: 16, 2001: 17, 2002: 18}, {'a': [1000, False, 'int'], 'b': [1001, False, 'int']}, {2000: 3}, '6']
+# [{1000: 3, 1001: 2000, 2000: 16, 2001: 17, 2002: 18}, {'a': [1000, False, 'int'], 'b': [1001, False, 'int']}, {2000: 3}, '4']
