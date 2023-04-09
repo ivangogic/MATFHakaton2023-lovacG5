@@ -4,7 +4,6 @@ import PyQt5
 from functools import partial
 import typing
 import sys
-import pygame
 
 from main_window import Ui_MainWindow
 from image_widget import MemoryViewer
@@ -49,7 +48,7 @@ class PointerExplorer(QMainWindow):
         self.ui.button4.clicked.connect(partial(self.openMemoryViewer))
 
         # variable viewer
-        self.ui.varsTextView.setText("a = 5")
+        self.ui.varsTextView.setText("")
 
     def start(self):
         global all_states2, curr_state2, curr_state_cnt2
@@ -77,6 +76,7 @@ class PointerExplorer(QMainWindow):
             curr_line2 = curr_state2[3]
 
         print(curr_state2)
+        self.update_variblae_view()
 
     def prev_line(self):
         global curr_state2, curr_state_cnt2, curr_line2
@@ -102,12 +102,19 @@ class PointerExplorer(QMainWindow):
         curr_state_cnt2 += 1
 
         print(curr_state2)
+        self.update_variblae_view()
 
         # 1 1 2 2 2 3 3 3 3 3 3 4 4 4 4 4
 
     def get_state(self):
         return curr_state2[0], curr_state2[1], curr_state2[2]
 
+    def update_variblae_view(self):
+        text = ""
+        memory, names, heap = self.get_state()
+        for name in names:
+            text += f"{names[name][2]} {name}, {names[name][0]}\n"
+        self.ui.varsTextView.setText(text)
 
     def openMemoryViewer(self):
         print('Opening memory visualizer')
