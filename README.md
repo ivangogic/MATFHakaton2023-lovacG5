@@ -9,7 +9,7 @@
 
 ## React Web Application
 <p float="left" align="middle">
-  <img src="c_examples/wep_app_01.png" width="49%" />
+  <img src="c_examples/web_app_01.png" width="49%" />
   <img src="c_examples/web_app_02.png" width="49%" />
 </p>
 
