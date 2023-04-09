@@ -173,7 +173,6 @@ def eval_while(instr):
 
 
 def eval_malloc(instr):
-    # print(instr)
     space = []
     n_instr = instr['n']
     n = eval_expr(n_instr)
@@ -196,15 +195,25 @@ def eval_malloc(instr):
 
 
 def eval_free(instr):
-    # print(instr)
-    var_name = instr['name']
-    var_addr = memory[names[var_name][0]]
-    # print(var_addr)
-    # print(memory)
-    if var_addr in heap_memory.keys():
-        n = heap_memory.get(var_addr)
-        for i in range(var_addr, var_addr + n):
-            memory.pop(i)
-        heap_memory.pop(var_addr)
+    print(heap_memory)
+    operand = instr['operand']
+    if operand['class'] == 'variable':
+        var_name = operand['name']
+        var_addr = memory[names[var_name][0]]
+        print(var_addr)
+        if var_addr in heap_memory.keys():
+            n = heap_memory.get(var_addr)
+            print(n)
+            for i in range(var_addr, var_addr + n):
+                memory.pop(i)
+            heap_memory.pop(var_addr)
+        else:
+            return -1
     else:
-        return -1
+        address = eval_expr(operand)
+        if address in heap_memory.keys():
+            n = heap_memory.get(address)
+            print(n)
+            for i in range(address, address + n):
+                memory.pop(i)
+            heap_memory.pop(address)

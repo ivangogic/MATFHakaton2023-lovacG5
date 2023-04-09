@@ -713,9 +713,10 @@ class FuncCall(Node):
                 'line': str(self.coord)
             }
         if self.name.name == 'free':
+            print(self.args.exprs[0].to_json())
             return {
                 'class': 'free',
-                'name': self.args.exprs[0].name,
+                'operand': self.args.exprs[0].to_json(),
                 'line': str(self.coord)
             }
         return ""
