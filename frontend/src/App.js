@@ -96,6 +96,7 @@ function App() {
         <h3 className="input_code">Input Code</h3>
         <form onSubmit={handleSubmit}>
           <textarea className="code_textarea"
+            spellCheck={false}
             rows={20}
             value={inputValue}
             style={{}}
