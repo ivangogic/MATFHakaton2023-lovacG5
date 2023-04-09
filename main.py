@@ -37,7 +37,7 @@ class PointerExplorer(QMainWindow):
         self.ui.setupUi(self)
 
         # code editor
-        self.ui.codeTextEdit.setText("int main() {\n    int a;\n a = 5;\n int *b = &a; \n int *c = malloc(5);\n"
+        self.ui.codeTextEdit.setText("int main() {\n int a;\n a = 5;\n int *b = &a; \n int *c = malloc(5);\n"
                                      "*(c + 2) = 69;\n free(c);\n }") # postavlja text
         # print(self.ui.codeTextEdit.toPlainText()) # uzima text
 
@@ -49,6 +49,8 @@ class PointerExplorer(QMainWindow):
 
         # variable viewer
         self.ui.varsTextView.setText("")
+
+        # self.currline = None
 
     def start(self):
         global all_states2, curr_state2, curr_state_cnt2
@@ -75,7 +77,8 @@ class PointerExplorer(QMainWindow):
             curr_state_cnt2 += 1
             curr_line2 = curr_state2[3]
 
-        print(curr_state2)
+        print(curr_state2[3], curr_state2)
+        self.render_code_view(curr_state2[3])
         self.update_variblae_view()
 
     def prev_line(self):
@@ -87,7 +90,7 @@ class PointerExplorer(QMainWindow):
         curr_state_cnt2 -= 1
 
         curr_line2 = curr_state2[3]
-
+ 
         while curr_state_cnt2 >= 0 \
                 and all_states2[curr_state_cnt2][3] == curr_line2:
             curr_state_cnt2 -= 1
@@ -101,7 +104,8 @@ class PointerExplorer(QMainWindow):
 
         curr_state_cnt2 += 1
 
-        print(curr_state2)
+        print(curr_state2[3],  curr_state2)
+        self.render_code_view(curr_state2[3])
         self.update_variblae_view()
 
         # 1 1 2 2 2 3 3 3 3 3 3 4 4 4 4 4
@@ -115,6 +119,17 @@ class PointerExplorer(QMainWindow):
         for name in names:
             text += f"{names[name][2]} {name}, {names[name][0]}\n"
         self.ui.varsTextView.setText(text)
+
+    def render_code_view(self, currline=None):
+        if not currline:
+            return
+        currline = int(currline)
+        text = self.ui.codeTextEdit.toPlainText()
+        text = text.replace('➡️','')
+        lines = [line for line in text.split('\n')]
+        print(lines)
+        lines[currline-1] = '➡️' + lines[currline-1]
+        self.ui.codeTextEdit.setText('\n'.join(lines))
 
     def openMemoryViewer(self):
         print('Opening memory visualizer')
