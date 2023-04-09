@@ -10,6 +10,8 @@ from main_window import Ui_MainWindow
 from image_widget import MemoryViewer
 import parsing_api
 
+from pygame_visualizer import *
+
 all_states2 = []
 curr_state2 = []
 curr_state_cnt2 = 0
@@ -109,18 +111,9 @@ class PointerExplorer(QMainWindow):
 
     def openMemoryViewer(self):
         print('Opening memory visualizer')
-        s = pygame.Surface((640, 480))
-        s.fill((64, 128, 192, 224))
-        pygame.draw.circle(s, (255, 255, 255, 255), (100, 100), 50)
-        self.w = MemoryViewer(s, self.get_state())
-        self.w.show()
-        # s = pygame.Surface((640, 480))
-        # s.fill((64, 128, 192, 224))
-        # pygame.draw.circle(s, (255, 255, 255, 255), (100, 100), 50)
-        # dialog.ui = MemoryViewer(s)
-        # # dialog.ui.setupUi()
-        # dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        # dialog.exec_()
+        v = Visualizer(self.get_state())
+        v.mainloop()
+
 
 
 if __name__ == '__main__':
