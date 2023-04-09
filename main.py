@@ -15,6 +15,7 @@ curr_state2 = []
 curr_state_cnt2 = 0
 curr_line2 = -1
 
+
 class AnotherWindow(QWidget):
     """
     This "window" is a QWidget. If it has no parent, it
@@ -35,14 +36,14 @@ class PointerExplorer(QMainWindow):
         self.ui.setupUi(self)
 
         # code editor
-        self.ui.codeTextEdit.setText("int main() {\n    int a = 5;\n int *b = &a; \n int *c = malloc(5);\n"
+        self.ui.codeTextEdit.setText("int main() {\n    int a;\n a = 5;\n int *b = &a; \n int *c = malloc(5);\n"
                                      "*(c + 2) = 69;\n free(c);\n }") # postavlja text
         # print(self.ui.codeTextEdit.toPlainText()) # uzima text
 
         # buttons
         self.ui.button1.clicked.connect(partial(self.start))
         self.ui.button2.clicked.connect(partial(self.next_line))
-        self.ui.button3.clicked.connect(partial(self.openMemoryViewer))
+        self.ui.button3.clicked.connect(partial(self.prev_line))
 
 
         # variable viewer
@@ -55,7 +56,7 @@ class PointerExplorer(QMainWindow):
         curr_state_cnt2 = 0
         code = self.ui.codeTextEdit.toPlainText()
         json2 = parsing_api.get_json_from_textarea(code)
-        all_states2 = parsing_api.get_all_states(json2)
+        all_states2 = parsing_api.get_all_states1(json2)
 
     def next_line(self):
         global curr_state2, curr_state_cnt2, curr_line2
@@ -63,17 +64,47 @@ class PointerExplorer(QMainWindow):
             print("Nema vise stanja")
             return
 
-        curr_state2 = parsing_api.get_next_state(all_states2, curr_state_cnt2)
+        curr_state2 = all_states2[curr_state_cnt2]
         curr_state_cnt2 += 1
         curr_line2 = curr_state2[3]
 
-        while curr_state_cnt2 < len(all_states2) and parsing_api.get_next_state(all_states2, curr_state_cnt2)[3] == curr_line2:
-            curr_state2 = parsing_api.get_next_state(all_states2, curr_state_cnt2)
+        while curr_state_cnt2 < len(all_states2) \
+                and all_states2[curr_state_cnt2][3] == curr_line2:
+            curr_state2 = all_states2[curr_state_cnt2]
             curr_state_cnt2 += 1
             curr_line2 = curr_state2[3]
 
         print(curr_state2)
 
+    def prev_line(self):
+        global curr_state2, curr_state_cnt2, curr_line2
+        if curr_state_cnt2 == 0:
+            print("Dosli ste do pocetka programa")
+            return
+
+        curr_state_cnt2 -= 1
+
+        curr_line2 = curr_state2[3]
+
+        while curr_state_cnt2 >= 0 \
+                and all_states2[curr_state_cnt2][3] == curr_line2:
+            curr_state_cnt2 -= 1
+
+        if curr_state_cnt2 < 0:
+            curr_state_cnt2 = 0
+            print("Dosli ste do pocetka programa")
+            return
+
+        curr_state2 = all_states2[curr_state_cnt2]
+
+        curr_state_cnt2 += 1
+
+        print(curr_state2)
+
+        # 1 1 2 2 2 3 3 3 3 3 3 4 4 4 4 4
+
+    def get_state(self):
+        return curr_state2[0], curr_state2[1], curr_state2[2]
 
 
     def openMemoryViewer(self):
@@ -90,6 +121,7 @@ class PointerExplorer(QMainWindow):
         # # dialog.ui.setupUi()
         # dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         # dialog.exec_()
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

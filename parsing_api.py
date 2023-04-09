@@ -19,19 +19,25 @@ def get_json_from_textarea(text):
     return code_json
 
 
-def get_all_states(json1):
+def get_all_states1(json1):
     eval_expr(json1)
     return all_states
 
 
-def get_next_state(all_states1, curr_state_cnt):
-    if curr_state_cnt < len(all_states1):
-        curr_state = all_states1[curr_state_cnt]
-        return curr_state
-    else:
-        print("Nema vise stanja")
+def get_all_states(json1):
+    eval_expr(json1)
+    return get_final_states(all_states)
 
 
-def get_open_memory():
-    return
+def get_final_states(states):
+    states_index = []
+    final_states = []
 
+    for i in reversed(states):
+        ind = i[3]
+        if ind not in states_index:
+            states_index.append(ind)
+            final_states.append(i)
+            print(i)
+    #print(*reversed(final_states), sep='\n')
+    return reversed(final_states)
