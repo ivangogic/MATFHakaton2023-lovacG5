@@ -8,6 +8,12 @@ import pygame
 
 from main_window import Ui_MainWindow
 from image_widget import MemoryViewer
+import parsing_api
+
+all_states2 = []
+curr_state2 = []
+curr_state_cnt2 = 0
+curr_line2 = -1
 
 class AnotherWindow(QWidget):
     """
@@ -21,23 +27,54 @@ class AnotherWindow(QWidget):
         layout.addWidget(self.label)
         self.setLayout(layout)
 
+
 class PointerExplorer(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        # code editor
+        self.ui.codeTextEdit.setText("int main() {\n    int a = 5;\n int *b = &a; \n int *c = malloc(5);\n"
+                                     "*(c + 2) = 69;\n free(c);\n }") # postavlja text
+        # print(self.ui.codeTextEdit.toPlainText()) # uzima text
+
         # buttons
-        self.ui.button1.clicked.connect(partial(print, "start clicked"))
-        self.ui.button2.clicked.connect(partial(print, "next line clicked"))
+        self.ui.button1.clicked.connect(partial(self.start))
+        self.ui.button2.clicked.connect(partial(self.next_line))
         self.ui.button3.clicked.connect(partial(self.openMemoryViewer))
 
-        # code editor
-        self.ui.codeTextEdit.setText("linija 1\nlinija 2") # postavlja text
-        print(self.ui.codeTextEdit.toPlainText()) # uzima text
 
         # variable viewer
         self.ui.varsTextView.setText("a = 5")
+
+    def start(self):
+        global all_states2, curr_state2, curr_state_cnt2
+        all_states2.clear()
+        curr_state2.clear()
+        curr_state_cnt2 = 0
+        code = self.ui.codeTextEdit.toPlainText()
+        json2 = parsing_api.get_json_from_textarea(code)
+        all_states2 = parsing_api.get_all_states(json2)
+
+    def next_line(self):
+        global curr_state2, curr_state_cnt2, curr_line2
+        if curr_state_cnt2 == len(all_states2):
+            print("Nema vise stanja")
+            return
+
+        curr_state2 = parsing_api.get_next_state(all_states2, curr_state_cnt2)
+        curr_state_cnt2 += 1
+        curr_line2 = curr_state2[3]
+
+        while curr_state_cnt2 < len(all_states2) and parsing_api.get_next_state(all_states2, curr_state_cnt2)[3] == curr_line2:
+            curr_state2 = parsing_api.get_next_state(all_states2, curr_state_cnt2)
+            curr_state_cnt2 += 1
+            curr_line2 = curr_state2[3]
+
+        print(curr_state2)
+
+
 
     def openMemoryViewer(self):
         print("START")
