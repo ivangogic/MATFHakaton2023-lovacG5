@@ -18,14 +18,21 @@ html, body, #root{
 .code_column{
     height: 100%;
     width: 15%;
+    padding-top:%;
+    padding-left:2%;
 }
 
 h3{
     text-align: center;
+    padding-bottom: 3px;
 }
 
 .code_textarea{
     width: 100%;
+}
+
+.code_textarea:focus{
+    outline:none;
 }
 
 .buttons{
@@ -38,6 +45,8 @@ h3{
     height: 100%;
     width: 70%;
     display: flex;
+    padding-top:20px;
+    padding-left:20px;
 }
 
 .memory_stack{

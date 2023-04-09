@@ -68,8 +68,6 @@ function App() {
     }
   },[memory]);
 
-
-
   useEffect(() => {  
     if (state !== undefined && state !== null) {
       setMemory(state[0]);
@@ -100,6 +98,7 @@ function App() {
           <textarea className="code_textarea"
             rows={20}
             value={inputValue}
+            style={{}}
             onChange={(e) => setInputValue(e.target.value)}
           />
           
