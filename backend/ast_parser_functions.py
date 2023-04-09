@@ -1,11 +1,11 @@
 import json
-from pycparser import c_parser
-from pycparser.c_ast import Node, FileAST
-
+# from pycparser.c_ast import Node, FileAST
+from backend.pycparser.c_ast import Node
 
 def initialize():
     global main_compound
     main_compound = None
+
 
 def ast_dfs(node: Node):
     global main_compound
@@ -18,4 +18,3 @@ def ast_dfs(node: Node):
             ast_dfs(child)
     except Exception as e:
         pass
-

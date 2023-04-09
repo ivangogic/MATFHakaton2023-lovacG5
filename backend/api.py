@@ -14,11 +14,13 @@ import ast_parser_functions
 app = FastAPI()
 parser = None                                                                                               
 
+
 @app.on_event('startup')
 def init_data():
     print("init call")
     global parser 
     parser = c_parser.CParser()
+
 
 @app.get("/get_data")
 def get_memory(_text : str):
@@ -39,6 +41,7 @@ def get_memory(_text : str):
     response.headers['Cache-Control'] = 'no-cache'
     
     return response
+
 
 if __name__ == '__main__':
     uvicorn.run(f'api:app', host='localhost', port=8086)

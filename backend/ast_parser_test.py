@@ -12,13 +12,13 @@ from backend.pycparser.c_ast import Node, FileAST
 
 text = r"""
 int main() {
-    int *ptr=malloc(4);  
-    int a=560;  
-    ptr=&a;  
-    free(ptr);  
+    int a = 5;
+    int *b = &a;
+    int *c = malloc(5);
+    *(c + 2) = 69;
+    free(c);
 }
 """
-
 
 
 parser = c_parser.CParser()

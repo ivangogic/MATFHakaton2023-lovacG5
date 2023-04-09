@@ -1,3 +1,7 @@
+from copy import deepcopy
+
+all_states = []
+
 memory = {}
 names = {}
 heap_memory = {}
@@ -6,11 +10,13 @@ stack_size = 1000
 heap_pos = 2000
 heap_size = 1000
 
+
 def evaluate_expression(data):
     memory.clear()
     names.clear()
 
     return eval_expr(data)
+
 
 def eval_expr(data):
     functions = {
@@ -29,7 +35,11 @@ def eval_expr(data):
         for instruction in data:
             eval_expr(instruction)
     else:
-        return functions[data['class']](data)
+        state = functions[data['class']](data)
+        all_states.append([deepcopy(memory), deepcopy(names), deepcopy(heap_memory), data['line'].split(':')[1]])
+        # print([memory, names, heap_memory, data['line'].split(':')[1]])
+        return state
+
 
 
 def eval_unaryop(json, flag=False):
@@ -46,6 +56,7 @@ def eval_unaryop(json, flag=False):
     elif operation == '*':
         evaluated_expr =  eval_expr(operand)
         return memory[evaluated_expr] if not flag else evaluated_expr
+
 
 def eval_binaryop(eval_dict: dict):
     operand_1 = eval_dict['operand1']
@@ -185,11 +196,11 @@ def eval_malloc(instr):
 
 
 def eval_free(instr):
-    print(instr)
+    # print(instr)
     var_name = instr['name']
     var_addr = memory[names[var_name][0]]
-    print(var_addr)
-    print(memory)
+    # print(var_addr)
+    # print(memory)
     if var_addr in heap_memory.keys():
         n = heap_memory.get(var_addr)
         for i in range(var_addr, var_addr + n):
