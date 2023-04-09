@@ -30,14 +30,14 @@ def get_all_states(json1):
 
 
 def get_final_states(states):
-    states_index = []
     final_states = []
-
-    for i in reversed(states):
-        ind = i[3]
-        if ind not in states_index:
-            states_index.append(ind)
-            final_states.append(i)
-            print(i)
-    #print(*reversed(final_states), sep='\n')
-    return reversed(final_states)
+    states.append([0,0,0,-1])
+    print(*states,sep='\n')
+    for i in range(len(states)-1):
+        ind1 = states[len(states)-1-i][3]
+        ind2 = states[len(states)-1-(i+1)][3]
+        if ind1!=ind2:
+            final_states.append(states[i])
+    # final_states.reverse()
+    print(*final_states,sep='\n')
+    return final_states
