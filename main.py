@@ -44,7 +44,7 @@ class PointerExplorer(QMainWindow):
         self.ui.button1.clicked.connect(partial(self.start))
         self.ui.button2.clicked.connect(partial(self.next_line))
         self.ui.button3.clicked.connect(partial(self.prev_line))
-
+        self.ui.button4.clicked.connect(partial(self.openMemoryViewer))
 
         # variable viewer
         self.ui.varsTextView.setText("a = 5")

@@ -34,7 +34,14 @@
       <item>
        <widget class="QPushButton" name="button3">
         <property name="text">
-         <string>Show Memory</string>
+         <string>Previous Line</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="button4">
+        <property name="text">
+         <string>Show Code</string>
         </property>
        </widget>
       </item>
