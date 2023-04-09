@@ -22,9 +22,13 @@ pip install pygame
 pip install PyQt5
 ```
 
-### Running the **web** app
-Dependencies: FastAPI
-```
-pip install fastapi
-pip install "uvicorn[standard]"
-```
+## Running the **web** app
+### Requierments
+        pip install fastapi
+        pip install "uvicorn[standard]"
+
+        npm i react-xarrows
+
+### How to run
+        Execute python ./backend/api.py  in order to run the server that parses the json representation of AST.
+        Then run npm start inside of the frontend directory.
