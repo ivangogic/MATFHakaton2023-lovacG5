@@ -1,5 +1,11 @@
 # MATFHakaton2023-lovacG5
 
+## AST - Abstract Syntax Tree
+
+<p float="left" align="middle">
+  <img src="c_examples/ast.png" width="60%" />
+</p>
+
 ## Desktop PyQt application
 
 <p float="left" align="middle">
