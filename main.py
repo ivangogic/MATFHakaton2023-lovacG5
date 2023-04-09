@@ -108,11 +108,11 @@ class PointerExplorer(QMainWindow):
 
 
     def openMemoryViewer(self):
-        print("START")
+        print('Opening memory visualizer')
         s = pygame.Surface((640, 480))
         s.fill((64, 128, 192, 224))
         pygame.draw.circle(s, (255, 255, 255, 255), (100, 100), 50)
-        self.w = MemoryViewer(s)
+        self.w = MemoryViewer(s, self.get_state())
         self.w.show()
         # s = pygame.Surface((640, 480))
         # s.fill((64, 128, 192, 224))
