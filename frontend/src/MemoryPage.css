@@ -1,0 +1,25 @@
+.memory_page{
+    display: flex;
+    align-items: center;
+    border: 0.5px solid white;
+    width: 35%;
+}
+
+.memory_address{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    width: 60%;
+    background-color: rgb(198, 196, 196);
+    height: 100%;
+}
+
+.memory_content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 30px;
+    background-color: gray;
+    color: white;
+}
