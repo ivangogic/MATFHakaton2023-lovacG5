@@ -53,6 +53,7 @@ class PointerExplorer(QMainWindow):
         # self.currline = None
 
     def start(self):
+        self.ui.button1.setDisabled(True)
         global all_states2, curr_state2, curr_state_cnt2
         all_states2.clear()
         curr_state2.clear()
@@ -117,7 +118,7 @@ class PointerExplorer(QMainWindow):
         text = ""
         memory, names, heap = self.get_state()
         for name in names:
-            text += f"{names[name][2]} {name}, {names[name][0]}\n"
+            text += f"{names[name][2]} {name}:{names[name][0]} ⬅️ {memory.get(names[name][0], 'NULL')}\n"
         self.ui.varsTextView.setText(text)
 
     def render_code_view(self, currline=None):

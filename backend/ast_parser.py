@@ -150,14 +150,24 @@ def eval_variable(data):
 
 def eval_if(instr):
     cond = eval_expr(instr['cond'])
-    print(cond)
     if cond == 1:
-        print(instr)
+        local_variables = []
         for data in instr['iftrue']:
+            if data['class'] == 'declare':
+                local_variables.append(data['name'])
             eval_expr(data)
+        for local_variable in local_variables:
+            memory.pop(names[local_variable][0])
+            names.pop(local_variable)
     else:
+        local_variables = []
         for data in instr['iffalse']:
+            if data['class'] == 'declare':
+                local_variables.append(data['name'])
             eval_expr(data)
+        for local_variable in local_variables:
+            memory.pop(names[local_variable][0])
+            names.pop(local_variable)
 
 
 def eval_while(instr):
