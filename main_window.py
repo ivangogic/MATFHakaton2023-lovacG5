@@ -68,6 +68,6 @@ class Ui_MainWindow(object):
         self.button1.setText(_translate("MainWindow", "Start"))
         self.button2.setText(_translate("MainWindow", "Next Line"))
         self.button3.setText(_translate("MainWindow", "Previous Line"))
-        self.button4.setText(_translate("MainWindow", "Show Code"))
+        self.button4.setText(_translate("MainWindow", "Show Memory"))
         self.codeLabel.setText(_translate("MainWindow", "Code"))
         self.varsLabel.setText(_translate("MainWindow", "Memory"))
